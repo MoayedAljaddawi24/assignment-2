@@ -120,4 +120,138 @@
       }
     });
   });
+})
+
+/* ===== Assignment 2 Enhancements ===== */
+
+/* 1) Personalized greeting (uses localStorage name if available) */
+(function greetingFeature() {
+  const el = document.getElementById('personalGreeting');
+  if (!el) return;
+  const h = new Date().getHours();
+  const part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  const saved = localStorage.getItem('username');
+  el.textContent = saved ? `${part}, ${saved}!` : `${part}!`;
 })();
+
+/* 2) Quote API with loading, error, retry */
+(function quoteFeature() {
+  const box = document.getElementById('dailyQuote');
+  if (!box) return;
+  const spinner = box.querySelector('.spinner');
+  const text = box.querySelector('.quote-text');
+  const retry = document.getElementById('retryQuote');
+
+  async function loadQuote() {
+    spinner.hidden = false; retry.hidden = true; text.textContent = 'Loading quote…';
+    try {
+      const ctrl = new AbortController();
+      const timeout = setTimeout(() => ctrl.abort(), 6000);
+      const res = await fetch('https://api.quotable.io/random', { signal: ctrl.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error('Bad status');
+      const data = await res.json();
+      text.textContent = `“${data.content}” — ${data.author}`;
+    } catch {
+      text.textContent = 'Could not load quote. Please try again.';
+      retry.hidden = false;
+    } finally {
+      spinner.hidden = true;
+    }
+  }
+
+  retry?.addEventListener('click', loadQuote);
+  loadQuote();
+})();
+
+/* 3) Projects: filter buttons + live search + empty state */
+(function projectFilters() {
+  const buttons = document.querySelectorAll('.filter-btn');
+  const cards = [...document.querySelectorAll('.projects-grid .card')];
+  const search = document.getElementById('projectSearch');
+  const empty = document.getElementById('projectsEmpty');
+  if (!cards.length) return;
+
+  let category = 'all';
+  let query = '';
+
+  function apply() {
+    let visible = 0;
+    cards.forEach(card => {
+      const tags = (card.dataset.tags || '').toLowerCase().split(' ');
+      const text = card.textContent.toLowerCase();
+      const matchCat = category === 'all' || tags.includes(category);
+      const matchQuery = !query || text.includes(query);
+      const show = matchCat && matchQuery;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    if (empty) empty.hidden = visible !== 0;
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+      category = btn.dataset.category;
+      apply();
+    });
+  });
+
+  search?.addEventListener('input', e => {
+    query = e.target.value.trim().toLowerCase();
+    apply();
+  });
+
+  apply();
+})();
+
+/* 4) Collapsible project details */
+(function collapsibleDetails() {
+  document.querySelectorAll('.details-toggle').forEach(btn => {
+    const id = btn.getAttribute('aria-controls');
+    const panel = document.getElementById(id);
+    if (!panel) return;
+
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      if (expanded) {
+        panel.setAttribute('aria-hidden', 'true');
+        panel.hidden = true;
+      } else {
+        panel.hidden = false;
+        requestAnimationFrame(() => panel.setAttribute('aria-hidden', 'false'));
+      }
+    });
+  });
+})();
+
+/* 5) Form: save name to localStorage + inline feedback */
+(function enhanceForm() {
+  const form = document.getElementById('contactForm');
+  if (!form) return;
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (form.checkValidity()) {
+      const name = (document.getElementById('name')?.value || '').trim();
+      if (name) localStorage.setItem('username', name);
+      toast('Message sent! (Demo)', 'success');
+      form.reset();
+    } else {
+      form.reportValidity();
+      toast('Please complete all required fields correctly.', 'error');
+    }
+  });
+
+  function toast(msg, type='success') {
+    const el = document.createElement('div');
+    el.className = `alert ${type}`;
+    el.role = 'status';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+})();
+
