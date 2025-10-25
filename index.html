@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Portfolio</title>
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+      <a class="logo" href="#hero">My Portfolio</a>
+
+      <nav id="siteNav" class="nav">
+        <a href="#hero">Hero</a>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle color theme">🌓</button>
+
+      <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="siteNav" aria-label="Toggle navigation">
+        ☰
+      </button>
+    </header>
+
+
+  <main>
+    <section id="hero" class="hero">
+      <h2>Hero</h2> 
+
+      <p class="hero-lead">
+        Hello, I'm <strong>Moayed Aljaddawi</strong>. 
+        Welcome to my portfolio website.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">See Projects</a>
+        <a href="#contact" class="btn">Contact Me</a>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2>About Me</h2>
+      <p>
+        I'm a CS student at King Fahd University of Petroleum & Minerals, passionate about web development.
+        I enjoy solving problems, expanding my knowledge, and continuously learning new technologies.
+      </p>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+
+      <div class="projects-grid">
+
+        <article class="card">
+          <img src="assets/images/reservation.png" alt="Screenshot of the Event Ticket Reservation System interface" class="card-img">
+          <div class="card-body">
+            <h3>Event Ticket Reservation System</h3>
+            <p>
+              A course project for ICS to manage event ticket reservations. Users can browse events,
+              reserve tickets, and view bookings. Practiced HTML, CSS, and basic JavaScript for forms.
+            </p>
+            <ul class="tags">
+              <li>Java</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="assets/images/kfupm-event-hub.png" alt="Screenshot of the KFUPM Event Hub website layout" class="card-img">
+          <div class="card-body">
+            <h3>KFUPM Event Hub <span class="badge">In Progress</span></h3>
+            <p>
+              Ongoing course project: a central hub for students to discover, register for, and manage
+              university events. Currently focusing on layout and responsiveness; features to follow.
+            </p>
+            <ul class="tags">
+              <li>HTML</li><li>CSS</li><li>JavaScript</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+
+    <section id="contact">
+      <h2>Contact</h2>
+
+      <form id="contactForm" class="form" novalidate>
+        <div class="form-row">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" placeholder="Your name" required />
+          <small id="nameError" class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required />
+          <small id="emailError" class="error" aria-live="polite"></small>
+        </div>
+
+        <div class="form-row">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="How can I help?" required></textarea>
+          <small id="messageError" class="error" aria-live="polite"></small>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Send</button>
+        <p class="form-note">This is a demo form; no data is sent.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Moayed Aljaddawi</p>
+  </footer>
+
+  <script src="js/script.js" defer></script>
+</body>
+</html>
