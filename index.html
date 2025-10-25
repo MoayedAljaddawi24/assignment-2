@@ -77,10 +77,10 @@
           <input id="projectSearch" type="search" placeholder="Search projects…" />
         </label>
       </div>
-      
+
       <div class="projects-grid">
 
-        <article class="card">
+        <article class="card" data-tags="java">
           <img src="assets/images/reservation.png" alt="Screenshot of the Event Ticket Reservation System interface" class="card-img">
           <div class="card-body">
             <h3>Event Ticket Reservation System</h3>
@@ -91,10 +91,20 @@
             <ul class="tags">
               <li>Java</li>
             </ul>
+
+            <!-- Assignment 2: collapsible -->
+            <button class="details-toggle" aria-expanded="false" aria-controls="proj1-details">More details</button>
+            <div id="proj1-details" class="details" hidden>
+              <ul>
+                <li>Role: Developer</li>
+                <li>Focus: Forms, validation</li>
+                <li>Takeaway: State management basics</li>
+              </ul>
+            </div>
           </div>
         </article>
 
-        <article class="card">
+        <article class="card" data-tags="html css javascript">
           <img src="assets/images/kfupm-event-hub.png" alt="Screenshot of the KFUPM Event Hub website layout" class="card-img">
           <div class="card-body">
             <h3>KFUPM Event Hub <span class="badge">In Progress</span></h3>
@@ -105,6 +115,16 @@
             <ul class="tags">
               <li>HTML</li><li>CSS</li><li>JavaScript</li>
             </ul>
+
+            <!-- Assignment 2: collapsible -->
+            <button class="details-toggle" aria-expanded="false" aria-controls="proj2-details">More details</button>
+            <div id="proj2-details" class="details" hidden>
+              <ul>
+                <li>Role: Frontend/UX</li>
+                <li>Focus: Responsive layout</li>
+                <li>Next: Event registration workflow</li>
+              </ul>
+            </div>
           </div>
         </article>
       </div>
