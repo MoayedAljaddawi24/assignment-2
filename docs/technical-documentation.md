@@ -1,49 +1,64 @@
 # Technical Documentation
 
-## Overview
-Static, single-page portfolio with four required sections (Hero, About, Projects, Contact).  
-Stack: **HTML**, **CSS**, **vanilla JS**. No frameworks or build tools.
+---
 
-## Requirements Mapping
-- **Hero / About / Projects / Contact** — implemented as semantic `<section>` blocks.
-- **Responsive design** — CSS grid/flex; cards stack to one column on narrow screens.
-- **At least one JS feature** — theme toggle (persisted), smooth scrolling with header offset, and form validation.
+## 🧠 Assignment 1 Summary
 
+The first version of the portfolio focused on **static structure and responsive design**.  
+It included:
+- A responsive layout with **Hero**, **About**, **Projects**, and **Contact** sections.
+- A **navigation bar** and **dark/light theme toggle** stored in localStorage.
+- A **contact form** with basic client-side validation.
+- Lazy-loaded images, smooth scrolling, and an automatically updating year.
+- Clear, accessible HTML and semantic elements.
 
-## HTML Notes
-- **Projects** use `<article class="card">` blocks with optional thumbnails and tech tags.
-- Anchor links navigate to section IDs (`#hero`, `#about`, `#projects`, `#contact`).
+---
 
-## CSS Decisions
-- Theme variables (`:root`) unify colors, spacing, radius, and shadows.
-- Section spacing via `--section-space`.
-- Responsive grid: `grid-template-columns: repeat(2, 1fr)` → `1fr` under ~800px.
-- Smooth scroll and sticky-header fix: `html { scroll-behavior: smooth; }` and `section { scroll-margin-top: 72px; }`.
+## 🚀 Assignment 2 Enhancements
 
-## JS Modules (IIFEs)
-- **Theme toggle:** toggles `:root.dark`, saves preference in `localStorage`.
-- **Mobile nav (optional):** toggles `.nav.open` on small screens.
-- **Smooth scroll:** calculates header height and scrolls with offset.
-- **Form validation:** client-side checks and friendly errors; no network requests.
+The second phase builds on Assignment 1 by introducing **interactivity, data handling, animations, and AI-assisted improvements**.
 
-## Accessibility
-- Landmarks and headings; labels and focus outlines.
-- `aria-live="polite"` for validation messages.
-- Good contrast in both themes; optional skip link.
-- Sticky header offset prevents headings from being hidden.
+### 1. Dynamic Content
+- Added **filter buttons** and a **live search bar** to filter projects by language or keyword.  
+- Implemented **collapsible project details** (“More details” buttons that expand or hide extra info).  
+- Created an **empty state** (“No projects found”) when no cards match filters.
 
-## Performance
-- No frameworks; minimal JS/CSS.
-- Images are local and `loading="lazy"`.
-- Single request per CSS/JS file.
+### 2. Data Handling
+- Personalized **greeting** using localStorage to remember the user’s name from the contact form.  
+- Integrated the **Quotable API** to fetch a random motivational quote on each load.  
+  - Includes **loading spinner**, **timeout**, and **retry** button on failure.
 
-## Known Limitations
-- Contact form is a demo; no backend.
-- Content is single-page; future growth might need routing or multi-page structure.
+### 3. Animation and Transitions
+- Smooth card hover effects and detail-panel transitions using CSS grid row + opacity.  
+- Subtle loading spinner for the quote section.  
+- Uses `prefers-reduced-motion` to respect accessibility settings.
 
-## Future Work
-- Add more projects and tags; project filtering.
-- Form backend and success state UI.
-- Unit tests for JS helpers.
+### 4. Error Handling and Feedback
+- Loading, error, and retry states for the API.  
+- Empty results message for filters/search.  
+- Toast-style alerts for form success or validation errors.
 
+### 5. Accessibility and UX
+- ARIA attributes for all interactive controls:  
+  - `aria-pressed` on filter buttons  
+  - `aria-expanded` + `aria-controls` on collapsible details  
+  - `aria-live` for the quote text  
+- Keyboard-friendly and screen-reader-friendly interactions.
 
+### 6. Files Modified
+| File | Purpose |
+|------|----------|
+| `index.html` | Added greeting, quote, filters, collapsibles, empty state |
+| `css/styles.css` | Added transitions, spinner, alerts, reduced-motion rules |
+| `js/script.js` | Implemented interactivity, API calls, localStorage, error handling |
+| `README.md` | Updated features and documentation links |
+| `docs/*.md` | Added Assignment 2 documentation sections |
+
+### 7. Testing & Performance
+- Tested on Chrome, Firefox, and Edge.  
+- Lightweight vanilla JS (no libraries).  
+- All interactive features degrade gracefully if JavaScript or API fails.
+
+---
+
+✅ **Result:** The portfolio now feels dynamic and interactive, demonstrating modern front-end techniques while maintaining accessibility and performance.
