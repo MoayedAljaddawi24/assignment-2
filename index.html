@@ -39,6 +39,16 @@
         <a href="#projects" class="btn btn-primary">See Projects</a>
         <a href="#contact" class="btn">Contact Me</a>
       </div>
+
+      <!-- Assignment 2: greeting + quote -->
+      <div class="hero-extras">
+        <p id="personalGreeting" class="muted"></p>
+        <div id="dailyQuote" class="quote">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="quote-text" aria-live="polite">Loading quote…</span>
+          <button id="retryQuote" class="btn btn-sm" type="button" hidden>Retry</button>
+        </div>
+      </div>
     </section>
 
     <section id="about">
@@ -52,6 +62,22 @@
     <section id="projects">
       <h2>Projects</h2>
 
+      <!-- Assignment 2: filter + search -->
+      <div class="projects-controls">
+        <div class="filters" role="group" aria-label="Filter projects">
+          <button class="filter-btn" data-category="all" aria-pressed="true">All</button>
+          <button class="filter-btn" data-category="html">HTML</button>
+          <button class="filter-btn" data-category="css">CSS</button>
+          <button class="filter-btn" data-category="javascript">JavaScript</button>
+          <button class="filter-btn" data-category="java">Java</button>
+        </div>
+
+        <label class="search-wrap">
+          <span class="visually-hidden">Search projects</span>
+          <input id="projectSearch" type="search" placeholder="Search projects…" />
+        </label>
+      </div>
+      
       <div class="projects-grid">
 
         <article class="card">
