@@ -1,191 +1,144 @@
 
-// form validation (demo only)
-(function () {
-  const form = document.getElementById('contactForm');
-  if (!form) return;
+/* ============================
+   Base helpers (year, theme)
+   ============================ */
 
-  const nameInput = document.getElementById('name');
-  const emailInput = document.getElementById('email');
-  const messageInput = document.getElementById('message');
-  const nameError = document.getElementById('nameError');
-  const emailError = document.getElementById('emailError');
-  const messageError = document.getElementById('messageError');
-
-  const isEmail = (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);
-  const setError = (el, msg = '') => (el.textContent = msg);
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    let ok = true;
-
-    setError(nameError); setError(emailError); setError(messageError);
-
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
-    const message = messageInput.value.trim();
-
-    if (!name) { setError(nameError, 'Please enter your name.'); ok = false; }
-    if (!email || !isEmail(email)) { setError(emailError, 'Enter a valid email address.'); ok = false; }
-    if (!message || message.length < 10) { setError(messageError, 'Message should be at least 10 characters.'); ok = false; }
-
-    if (ok) { alert('Thanks! This form is a demo only.'); form.reset(); }
-  });
-
-  [nameInput, emailInput, messageInput].forEach((input) => {
-    input.addEventListener('blur', () => {
-      if (input === nameInput && !nameInput.value.trim()) setError(nameError, 'Please enter your name.');
-      else if (input === emailInput && !isEmail(emailInput.value.trim())) setError(emailError, 'Enter a valid email address.');
-      else if (input === messageInput && messageInput.value.trim().length < 10) setError(messageError, 'Message should be at least 10 characters.');
-    });
-    input.addEventListener('input', () => {
-      if (input === nameInput) setError(nameError);
-      if (input === emailInput) setError(emailError);
-      if (input === messageInput) setError(messageError);
-    });
-  });
+// Footer year
+(function setYear() {
+  const el = document.getElementById('year');
+  if (el) el.textContent = new Date().getFullYear();
 })();
 
-// mobile menu (hamburger)
-(function () {
+// === Theme toggle (robust: works with [data-theme] or .dark/.light) ===
+(function themeToggle() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+
+  const KEY = 'theme';
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  // Determine current theme from storage, classes, data-attr, or system
+  const stored = localStorage.getItem(KEY);
+  let current =
+    stored ||
+    (document.documentElement.classList.contains('dark') ? 'dark' :
+     document.documentElement.classList.contains('light') ? 'light' :
+     document.documentElement.dataset.theme || (prefersDark ? 'dark' : 'light'));
+
+  apply(current);
+
+  btn.addEventListener('click', () => {
+    current = current === 'dark' ? 'light' : 'dark';
+    apply(current);
+    localStorage.setItem(KEY, current);
+  });
+
+  function apply(mode) {
+    // Keep both patterns in sync so whichever your CSS uses will work
+    document.documentElement.dataset.theme = mode;         // [data-theme="dark|light"]
+    document.documentElement.classList.toggle('dark',  mode === 'dark');   // .dark
+    document.documentElement.classList.toggle('light', mode === 'light');  // .light
+  }
+})();
+
+
+// Mobile menu toggle (if you style it)
+(function mobileMenu() {
   const btn = document.getElementById('menuToggle');
   const nav = document.getElementById('siteNav');
   if (!btn || !nav) return;
 
   btn.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
-    btn.setAttribute('aria-expanded', String(open));
-  });
-
-  nav.querySelectorAll('a[href^="#"]').forEach((a) => {
-    a.addEventListener('click', () => {
-      nav.classList.remove('open');
-      btn.setAttribute('aria-expanded', 'false');
-    });
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    nav.classList.toggle('open', !expanded);
   });
 })();
 
-// theme toggle (light/dark)
-(function () {
-  const btn = document.getElementById('themeToggle');
-  if (!btn) return;
+/* =========================================
+   Assignment 2 features (interactive)
+   ========================================= */
 
-  const root = document.documentElement;
-  const apply = (mode) => {
-    const dark = mode === 'dark';
-    root.classList.toggle('dark', dark);
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
-  };
-
-  const saved = localStorage.getItem('theme');
-  if (saved) apply(saved);
-  else apply(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-  btn.addEventListener('click', () => apply(root.classList.contains('dark') ? 'light' : 'dark'));
-
-  if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem('theme')) apply(e.matches ? 'dark' : 'light');
-    });
-  }
-})();
-
-// footer year
-(function () {
-  const y = document.getElementById('year');
-  if (y) y.textContent = new Date().getFullYear();
-})();
-
-// smooth in-page scroll with header offset
-(function () {
-  const header = document.querySelector('.site-header');
-
-  document.querySelectorAll('a[href^="#"]').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      const hash = link.getAttribute('href');
-      if (!hash || hash === '#') return;
-
-      const target = document.getElementById(decodeURIComponent(hash.slice(1)));
-      if (!target) return;
-
-      e.preventDefault();
-      const offset = header ? header.offsetHeight : 64;
-      const y = target.getBoundingClientRect().top + window.pageYOffset - offset - 8;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-
-      const nav = document.getElementById('siteNav');
-      const btn = document.getElementById('menuToggle');
-      if (nav && btn && nav.classList.contains('open')) {
-        nav.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  });
-})
-
-/* ===== Assignment 2 Enhancements ===== */
-
-/* 1) Personalized greeting (uses localStorage name if available) */
+// 1) Personalized greeting (time of day + stored name)
 (function greetingFeature() {
   const el = document.getElementById('personalGreeting');
   if (!el) return;
+
   const h = new Date().getHours();
   const part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
   const saved = localStorage.getItem('username');
   el.textContent = saved ? `${part}, ${saved}!` : `${part}!`;
 })();
 
-/* 2) Quote API with loading, error, retry */
+// 2) Quote API with resilient fallback
 (function quoteFeature() {
-  const box = document.getElementById('dailyQuote');
-  if (!box) return;
-  const spinner = box.querySelector('.spinner');
-  const text = box.querySelector('.quote-text');
-  const retry = document.getElementById('retryQuote');
+  const btn = document.getElementById("retryQuote");
+  const text = document.querySelector("#dailyQuote .quote-text");
+  const spinner = document.querySelector("#dailyQuote .spinner");
+
+  let authorEl = document.querySelector("#dailyQuote .quote-author");
+  if (!authorEl) {
+    authorEl = document.createElement("span");
+    authorEl.className = "quote-author";
+    document.querySelector("#dailyQuote").appendChild(authorEl);
+  }
 
   async function loadQuote() {
-    spinner.hidden = false; retry.hidden = true; text.textContent = 'Loading quote…';
+    spinner.hidden = false;
+    btn.hidden = true;
+    text.textContent = "Loading quote…";
+    authorEl.textContent = "";
+
     try {
-      const ctrl = new AbortController();
-      const timeout = setTimeout(() => ctrl.abort(), 6000);
-      const res = await fetch('https://api.quotable.io/random', { signal: ctrl.signal });
-      clearTimeout(timeout);
-      if (!res.ok) throw new Error('Bad status');
-      const data = await res.json();
-      text.textContent = `“${data.content}” — ${data.author}`;
-    } catch {
-      text.textContent = 'Could not load quote. Please try again.';
-      retry.hidden = false;
+      const response = await fetch("https://dummyjson.com/quotes/random");
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const data = await response.json();
+
+      text.textContent = `“${data.quote || data.content}”`;
+      authorEl.textContent = `${data.author}`;
+      authorEl.style.display = "block"; 
+      authorEl.style.marginTop = "0.25rem";
+    } catch (err) {
+      text.textContent = "Failed to load quote.";
+      authorEl.textContent = "";
+      console.error("Error fetching quote:", err);
+      btn.hidden = false;
     } finally {
       spinner.hidden = true;
     }
   }
 
-  retry?.addEventListener('click', loadQuote);
+  btn.addEventListener("click", loadQuote);
   loadQuote();
 })();
 
-/* 3) Projects: filter buttons + live search + empty state */
+
+// 3) Project filters + live search + empty state
 (function projectFilters() {
   const buttons = document.querySelectorAll('.filter-btn');
-  const cards = [...document.querySelectorAll('.projects-grid .card')];
+  const cards = Array.from(document.querySelectorAll('.projects-grid .card'));
   const search = document.getElementById('projectSearch');
   const empty = document.getElementById('projectsEmpty');
   if (!cards.length) return;
 
-  let category = 'all';
+  let activeCategory = 'all';
   let query = '';
 
   function apply() {
     let visible = 0;
+
     cards.forEach(card => {
-      const tags = (card.dataset.tags || '').toLowerCase().split(' ');
+      const tags = (card.dataset.tags || '').toLowerCase().split(/\s+/);
       const text = card.textContent.toLowerCase();
-      const matchCat = category === 'all' || tags.includes(category);
+
+      const matchCat = activeCategory === 'all' || tags.includes(activeCategory);
       const matchQuery = !query || text.includes(query);
+
       const show = matchCat && matchQuery;
       card.style.display = show ? '' : 'none';
       if (show) visible++;
     });
+
     if (empty) empty.hidden = visible !== 0;
   }
 
@@ -193,12 +146,12 @@
     btn.addEventListener('click', () => {
       buttons.forEach(b => b.setAttribute('aria-pressed', 'false'));
       btn.setAttribute('aria-pressed', 'true');
-      category = btn.dataset.category;
+      activeCategory = btn.dataset.category || 'all';
       apply();
     });
   });
 
-  search?.addEventListener('input', e => {
+  search?.addEventListener('input', (e) => {
     query = e.target.value.trim().toLowerCase();
     apply();
   });
@@ -206,38 +159,41 @@
   apply();
 })();
 
-/* 4) Collapsible project details */
+// 4) Collapsible project "More details"
 (function collapsibleDetails() {
   document.querySelectorAll('.details-toggle').forEach(btn => {
     const id = btn.getAttribute('aria-controls');
-    const panel = document.getElementById(id);
+    const panel = id ? document.getElementById(id) : null;
     if (!panel) return;
 
     btn.addEventListener('click', () => {
       const expanded = btn.getAttribute('aria-expanded') === 'true';
       btn.setAttribute('aria-expanded', String(!expanded));
+
       if (expanded) {
         panel.setAttribute('aria-hidden', 'true');
         panel.hidden = true;
       } else {
         panel.hidden = false;
+        // allow CSS transition
         requestAnimationFrame(() => panel.setAttribute('aria-hidden', 'false'));
       }
     });
   });
 })();
 
-/* 5) Form: save name to localStorage + inline feedback */
+// 5) Contact form: save name + toast feedback
 (function enhanceForm() {
   const form = document.getElementById('contactForm');
   if (!form) return;
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
+
     if (form.checkValidity()) {
       const name = (document.getElementById('name')?.value || '').trim();
       if (name) localStorage.setItem('username', name);
-      toast('Message sent! (Demo)', 'success');
+      toast('Message sent! (Demo — no data is transmitted)', 'success');
       form.reset();
     } else {
       form.reportValidity();
@@ -245,7 +201,7 @@
     }
   });
 
-  function toast(msg, type='success') {
+  function toast(msg, type = 'success') {
     const el = document.createElement('div');
     el.className = `alert ${type}`;
     el.role = 'status';
@@ -254,4 +210,3 @@
     setTimeout(() => el.remove(), 3000);
   }
 })();
-
